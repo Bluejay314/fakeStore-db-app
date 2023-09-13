@@ -1,6 +1,6 @@
 "use strict";
 
-let { User} = require("../models");
+let { User } = require("../models");
 
 const getUsers = (res) => {
     User.find({})
@@ -12,9 +12,7 @@ const getUsers = (res) => {
 };
 
 const createUser = (data, res) => {
-    console.log(data);
-    new User(data)
-        .save()
+    new User(data).save()
         .then((data) => res.send({ result: 200, data: data }))
         .catch((err) => {
             console.log(err);
@@ -23,8 +21,6 @@ const createUser = (data, res) => {
 };
 
 const updateUser = (req, res) => {
-    console.log(req.body);
-    
     User.findByIdAndUpdate(req.params.id, req.body, {
         useFindAndModify: false,
     })
