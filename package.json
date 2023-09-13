@@ -1,0 +1,26 @@
+{
+  "name": "fakestore-db-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bluejay314/fakeStore-db-app.git"
+  },
+  "author": "Jarrad Phillips",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bluejay314/fakeStore-db-app/issues"
+  },
+  "homepage": "https://github.com/Bluejay314/fakeStore-db-app#readme",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.1"
+  }
+}
