@@ -6,7 +6,6 @@ const productSchema = new Schema({
     price: {type: Number, required: true},
     description: {type: String},
     category: {type: String},
-    rating_id: {type: mongoose.Schema.Types.ObjectId, ref: "rating"},
 
     createdAt: { type: Date, default: Date.now},
     updatedAt: { type: Date, default: Date.now},
