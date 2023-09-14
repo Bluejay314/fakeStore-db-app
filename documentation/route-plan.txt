@@ -1,0 +1,23 @@
+         -- USER --
+[READ user]       /users/:id
+[UPDATE user]     /users/:id
+
+[READ users]      /users/admin
+[CREATE user]     /users/admin
+[DELETE user]     /users/admin/:id
+
+         -- CARTS --
+[READ cart]       /carts/:id
+[CREATE cart]     /carts/:id
+[UPDATE cart]     /carts/:id
+[DELETE cart]     /carts/:id
+
+[READ carts]      /carts/admin
+
+        -- PRODUCTS --
+[READ product]    /products/:id
+[READ products]   /products
+
+[CREATE product]  /products/admin/:id
+[UPDATE product]  /products/admin/:id
+[DELETE product]  /products/admin/:id

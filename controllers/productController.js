@@ -5,19 +5,19 @@ let { Product } = require("../models");
 const getProducts = (res) => {
     Product.find({})
         .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+        .catch((err) => res.send({ result: 500, error: err.message }));
+};
+
+const getProduct = (req, res) => {
+    Product.findById(req.params.id)
+        .then((data) => res.send({ result: 200, data: data }))
+        .catch((err) => res.send({ result: 500, error: err.message }));
 };
 
 const createProduct = (data, res) => {
     new Product(data).save()
         .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+        .catch((err) => res.send({ result: 500, error: err.message }));
 };
 
 const updateProduct = (req, res) => {
@@ -25,10 +25,7 @@ const updateProduct = (req, res) => {
         useFindAndModify: false,
     })
         .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+        .catch((err) => res.send({ result: 500, error: err.message }));
 };
 
 const deleteProduct = (req, res) => {
@@ -36,13 +33,11 @@ const deleteProduct = (req, res) => {
         useFindAndModify: false,
     })
         .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+        .catch((err) => res.send({ result: 500, error: err.message }));
 };
 
 module.exports = {
+    getProduct,
     getProducts,
     createProduct,
     updateProduct,

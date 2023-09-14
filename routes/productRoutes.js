@@ -3,20 +3,13 @@ let { productController } = require("../controllers")
 
 let router = express.Router();
 
-router.get("/", (req, res) => {
-    productController.getProducts(res);
-});
+// User Routes
+router.get("/", (_, res) => productController.getProducts(res));
+router.get("/:id", (req, res) => productController.getProduct(req, res));
 
-router.post("/create", (req, res) => {
-    productController.createProduct(req.body, res);
-});
-
-router.put('/:id', (req, res) => {
-    productController.updateProduct(req, res)
-});
-
-router.delete('/:id', (req, res) => {
-    productController.deleteProduct(req, res)
-});
+// Admin Routes
+router.post("/admin/:id", (req, res) => productController.createProduct(req.body, res));
+router.put("./admin/:id", (req, res) => productController.updateProduct(req, res));
+router.delete("/admin/:id", (req, res) => productController.deleteProduct(req, res));
 
 module.exports = router;

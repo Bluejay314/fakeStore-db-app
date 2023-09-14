@@ -1,60 +1,73 @@
 "use strict";
 
-let { User } = require("../models");
+let { Cart, CartItem } = require("../models");
 
-const getUser = (req, res) => {
-    User.findById(req.params.id)
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+const getCart = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({user_id: req.params.id});
+        const cartItems = await CartItem.find({cart_id: cart._id});
+        res.send({ result: 200, data: cartItems });
+    } catch(err) {
+        res.send({ result: 500, error: err.message });
+    }
 }
 
-const getUsers = (res) => {
-    User.find({})
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+const getCarts = async (res) => {
+    try {
+        const data = await Cart.find({});
+        res.send({ result: 200, data: data });
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
-const createUser = (data, res) => {
-    new User(data).save()
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+const createCart = async (data, res) => {
+    try {
+        const newCart = await new Cart(data).save();
+        res.send({ result: 200, data: newCart });
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
-const updateUser = (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {
+const updateCart = async (req, res) => {
+    try {
+        const cart = await Cart.findOne({user_id: req.params.id});
+        const cartItem = await CartItem.findOneAndUpdate({
+            product_id: req.body.product_id,
+            cart_id: cart._id
+        }, {
+            quantity: req.body.quantity
+        }, {
+            upsert: true
+        });
+
+        res.send({ result: 200, data: cartItem })
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
+
+    Cart.findByIdAndUpdate(req.params.id, req.body, {
         useFindAndModify: false,
-    })
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
-        });
+    });
 };
 
-const deleteUser = (req, res) => {
-    User.findByIdAndRemove(req.params.id, req.body, {
-        useFindAndModify: false,
-    })
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => {
-            console.log(err);
-            res.send({ result: 500, error: err.message });
+const deleteCart = async (req, res) => {
+    try {
+        const data = await Cart.findByIdAndRemove(req.params.id, req.body, {
+            useFindAndModify: false,
         });
+
+        res.send({ result: 200, data: data })
+    } catch(err) {
+        res.send({ result: 500, error: err.message });
+    }
 };
 
 module.exports = {
-    getUser,
-    getUsers,
-    createUser,
-    updateUser,
-    deleteUser
+    getCart,
+    getCarts,
+    createCart,
+    updateCart,
+    deleteCart
 };

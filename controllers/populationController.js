@@ -1,7 +1,7 @@
 const axios = require("axios");;
 const Models = require("../models");
-const rootURL = "https://fakestoreapi.com";
 const bcrypt = require("bcrypt");
+const rootURL = "https://fakestoreapi.com";
 
 const populateUsers = async () => {
     try {
@@ -21,7 +21,7 @@ const populateUsers = async () => {
             }());
         }
 
-        console.log(`Users populated`)
+        console.log(`Users populated...`)
     } catch(err) {
         console.log(`failed to populate users. ${err}`)
     }
@@ -41,7 +41,7 @@ const populateProducts = async () => {
             }).save();
         });
 
-        console.log(`Products populated`)
+        console.log(`Products populated...`)
     } catch(err) {
         console.log(`failed to populate products. ${err}`)
     }
@@ -71,36 +71,14 @@ const populateCarts = async () => {
             }());
         };
 
-        console.log(`Carts populated`)
+        console.log(`Carts populated...`)
     } catch(err) {
         console.log(`failed to populate Carts. ${err}`)
-    }
-}
-
-const populateCartItems = async () => {
-    try {
-        await Models.CartItem.deleteMany({});
-        const carts = await Models.Cart.find({});
-        for(const cart of carts) {
-            for(const cartItem of cart["products"]) {
-                const product = Models.Product.findOne({key: cartItem["productId"]});
-                Models.CartItem({
-                    product_id: product._id,
-                    cart_id: cart._id,
-                    quantity: cartItem["quantity"]
-                }).save();
-            }
-        };
-
-        console.log(`CartItems populated`)
-    } catch(err) {
-        console.log(`failed to populate CartItems. ${err}`)
     }
 }
 
 module.exports = {
     populateUsers,
     populateProducts,
-    populateCarts,
-    populateCartItems
+    populateCarts
 }
