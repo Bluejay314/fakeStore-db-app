@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 let dbConnect = require("./dbConnect");
-const { populationController } = require("./controllers");
+const { populateDatabase } = require("./controllers");
 const userRoutes =require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
@@ -23,8 +23,8 @@ app.listen(process.env.PORT, () => {
 });
 
 async function init() {
-    // await populationController.populateUsers();
-    // await populationController.populateProducts();
-    // await populationController.populateCarts();
-    console.log("Loading Success!");
+    await populateDatabase.populateUsers();
+    await populateDatabase.populateProducts();
+    await populateDatabase.populateCarts();
+    console.log("Successfully populated databases");
 }
