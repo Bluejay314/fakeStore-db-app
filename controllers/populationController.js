@@ -1,18 +1,25 @@
-const axios = require("axios");
-const mongoose = require("mongoose");
+const axios = require("axios");;
 const Models = require("../models");
 const rootURL = "https://fakestoreapi.com";
+const bcrypt = require("bcrypt");
 
 const populateUsers = async () => {
     try {
         const response = await axios.get("https://fakestoreapi.com/users");
         await Models.User.deleteMany({});
-        for(const user of response.data) 
-            Models.User({
-                key: user.id,
-                name: user.username,
-                email: user.email
-            }).save();
+        for(const user of response.data) { 
+            (async function() {
+                bcrypt.hash(user.password, 10)
+                    .then(hash => {
+                        Models.User({
+                            key: user.id,
+                            name: user.username,
+                            email: user.email,
+                            password: hash
+                        }).save();
+                    });
+            }());
+        }
 
         console.log(`Users populated`)
     } catch(err) {
@@ -44,27 +51,25 @@ const populateCarts = async () => {
     try {
         const response = await axios.get(`${rootURL}/carts`);
         await Models.Cart.deleteMany({});
-        for(const cart of response.data){
-           build(cart)
-        };
-
-        async function build(cart) {
-            const user = await Models.User.findOne({key: cart.userId})
-            const newCart = await Models.Cart({
-                key: cart.id,
-                user_id: user._id
-            }).save();
-
-            await Models.CartItem.deleteMany({});
-            for(const cartItem of cart.products) {
-                const product = await Models.Product.findOne({key: cartItem.productId});
-                await Models.CartItem({
-                    product_id: product._id,
-                    cart_id: newCart._id,
-                    quantity: cartItem.quantity
+        for(const cart of response.data) {
+            (async function () {
+                const user = await Models.User.findOne({key: cart.userId})
+                const newCart = await Models.Cart({
+                    key: cart.id,
+                    user_id: user._id
                 }).save();
-            }
-        }
+
+                await Models.CartItem.deleteMany({});
+                for(const cartItem of cart.products) {
+                    const product = await Models.Product.findOne({key: cartItem.productId});
+                    await Models.CartItem({
+                        product_id: product._id,
+                        cart_id: newCart._id,
+                        quantity: cartItem.quantity
+                    }).save();
+                }
+            }());
+        };
 
         console.log(`Carts populated`)
     } catch(err) {
