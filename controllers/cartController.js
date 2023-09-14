@@ -1,9 +1,18 @@
 "use strict";
 
-let { Rating } = require("../models");
+let { User } = require("../models");
 
-const getRatings = (res) => {
-    Rating.find({})
+const getUser = (req, res) => {
+    User.findById(req.params.id)
+        .then((data) => res.send({ result: 200, data: data }))
+        .catch((err) => {
+            console.log(err);
+            res.send({ result: 500, error: err.message });
+        });
+}
+
+const getUsers = (res) => {
+    User.find({})
         .then((data) => res.send({ result: 200, data: data }))
         .catch((err) => {
             console.log(err);
@@ -11,8 +20,8 @@ const getRatings = (res) => {
         });
 };
 
-const createRating = (data, res) => {
-    new Rating(data).save()
+const createUser = (data, res) => {
+    new User(data).save()
         .then((data) => res.send({ result: 200, data: data }))
         .catch((err) => {
             console.log(err);
@@ -20,8 +29,8 @@ const createRating = (data, res) => {
         });
 };
 
-const updateRating = (req, res) => {
-    Rating.findByIdAndUpdate(req.params.id, req.body, {
+const updateUser = (req, res) => {
+    User.findByIdAndUpdate(req.params.id, req.body, {
         useFindAndModify: false,
     })
         .then((data) => res.send({ result: 200, data: data }))
@@ -31,8 +40,8 @@ const updateRating = (req, res) => {
         });
 };
 
-const deleteRating = (req, res) => {
-    Rating.findByIdAndRemove(req.params.id, req.body, {
+const deleteUser = (req, res) => {
+    User.findByIdAndRemove(req.params.id, req.body, {
         useFindAndModify: false,
     })
         .then((data) => res.send({ result: 200, data: data }))
@@ -43,8 +52,9 @@ const deleteRating = (req, res) => {
 };
 
 module.exports = {
-    getRatings,
-    createRating,
-    updateRating,
-    deleteRating
+    getUser,
+    getUsers,
+    createUser,
+    updateUser,
+    deleteUser
 };
