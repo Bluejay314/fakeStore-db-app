@@ -14,10 +14,13 @@ let { User } = require("../models");
  * @param {express.Request} req server request object
  * @param {express.Response} res server response object
  */
-const getUser = (req, res) => {
-    User.findById(req.params.id)
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => res.send({ result: 500, error: err.message }));
+const getUser = async (req, res) => {
+    try {
+        const data = await User.findById(req.params.id);
+        res.send({ result: 200, data: data })
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 }
 
 /**
@@ -25,10 +28,13 @@ const getUser = (req, res) => {
  * 
  * @param {express.Response} res 
  */
-const getUsers = (res) => {
-    User.find({})
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => res.send({ result: 500, error: err.message }));
+const getUsers = async (res) => {
+    try {
+        const data = await User.find({});
+        res.send({ result: 200, data: data })
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
 /**
@@ -36,12 +42,14 @@ const getUsers = (res) => {
  * @param {Object} data body of the express request object
  * @param {express.Response} res server response object
  */
-const createUser = (data, res) => {
-    bcrypt.hash(data.password, 10).then(hash => {
-        new User({...data, password: hash}).save()
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => res.send({ result: 500, error: err.message }));
-    });
+const createUser = async (data, res) => {
+    try {
+        const hash = await bcrypt.hash(data.password, 10);
+        await new User({...data, password: hash}).save();
+        res.send({ result: 200, data: data });
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
 /**
@@ -50,12 +58,19 @@ const createUser = (data, res) => {
  * @param {express.Request} req server request object
  * @param {express.Response} res server response object
  */
-const updateUser = (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {
-        useFindAndModify: false,
-    })
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => res.send({ result: 500, error: err.message }));
+const updateUser = async (req, res) => {
+    try {
+        if(req.body.password) {
+            const hash = await bcrypt.hash(req.body.password, 10);
+            req.body = {...req.body, password: hash};
+        }
+
+        const user = await User.findByIdAndUpdate(req.params.id, req.body);
+
+        res.send({ result: 200, data: user})
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
 /**
@@ -63,12 +78,16 @@ const updateUser = (req, res) => {
  * @param {express.Request} req server request object
  * @param {express.Response} res server response object
  */
-const deleteUser = (req, res) => {
-    User.findByIdAndRemove(req.params.id, req.body, {
-        useFindAndModify: false,
-    })
-        .then((data) => res.send({ result: 200, data: data }))
-        .catch((err) => res.send({ result: 500, error: err.message }));
+const deleteUser = async (req, res) => {
+    try {
+        const data = await User.findByIdAndRemove(req.params.id, req.body, {
+            useFindAndModify: false,
+        });
+
+        res.send({ result: 200, data: data });
+    } catch(err) {
+        res.send({ result: 500, error: err.message })
+    }
 };
 
 module.exports = {
